@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>hitlerepstein.vegas – OFICJALNA STRONA PIEKŁA 2025</title>
+    <style>
+        * { margin:0; padding:0; overflow:hidden; cursor:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='), auto; }
+        body { background:#000; color:#f00; font-family:Comic Sans MS; image-rendering:pixelated; }
+        canvas { position:fixed; top:0; left:0; z-index:-1; }
+        #all { position:fixed; top:0; left:0; width:100vw; height:100vh; }
+        .epstein { filter:hue-rotate(69deg) saturate(666%) brightness(1.5); animation:epstein 0.3s infinite alternate; }
+        @keyframes epstein { 0%{transform:scale(1) rotate(0deg);} 100%{transform:scale(1.15) rotate(3deg);} }
+        #spinner { position:fixed; top:20%; left:50%; transform:translate(-50%,-50%); width:420px; height:420px; background:url('https://i.imgur.com/9zJ6bYJ.png') center/cover; border:20px solid #ff0040; border-radius:50%; box-shadow:0 0 100px #f00, inset 0 0 100px #f00; animation:spin 1s linear infinite; cursor:pointer; }
+        @keyframes spin { 100%{transform:translate(-50%,-50%) rotate(666deg);} }
+        #price { position:fixed; top:10px; left:10px; font-size:60px; font-weight:999; text-shadow:0 0 20px #f00; animation:blink 0.1s infinite; }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+        #hitlercandle { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); font-size:100px; animation:up 2s infinite; }
+        @keyframes up { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-100px);} }
+        #roulette, #blackjack, #slots { position:fixed; width:300px; height:200px; background:rgba(255,0,0,0.9); border:5px solid gold; color:white; text-align:center; padding-top:80px; font-size:30px; }
+        #roulette { top:10%; right:5%; }
+        #blackjack { bottom:10%; right:5%; }
+        #slots { bottom:10%; left:5%; }
+        .popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:80vw; height:80vh; background:#000 url('https://i.imgur.com/0bMvJ8J.jpeg') center/cover; border:15px solid #ff0040; z-index:9999; display:none; font-size:50px; color:#0f0; text-align:center; padding-top:200px; text-shadow:0 0 30px lime; }
+        audio { display:none; }
+    </style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div id="price">$EPSTEIN = $69.420</div>
+<div id="hitlercandle">HITLER MOONING HARD 🚀🚀🚀</div>
+
+<div id="spinner" onclick="spin()"></div>
+
+<div id="roulette" class="epstein">LIVE ROULETKA<br>00 = FBI RAID</div>
+<div id="blackjack" class="epstein">BLACKJACK<br>Prince Andrew już się poci</div>
+<div id="slots" class="epstein">SLOTS 🍆💊👶<br>JACKPOT 666,666</div>
+
+<div id="popup" class="popup">KUPUJ $EPSTEIN CZY CHCESZ UMRZEĆ BIEDNY?</div>
+
+<audio id="heil" loop>
+    <source src="https://raw.githubusercontent.com/0x696e6a/0x696e6a/main/heil-gas-gas-gas.mp3" type="audio/mp3">
+</audio>
+<audio id="moan" loop>
+    <source src="https://raw.githubusercontent.com/0x696e6a/0x696e6a/main/moan.mp3" type="audio/mp3">
+</audio>
+
+<script>
+    // DŹWIĘK TOTALNY ROZPIERDOL
+    document.body.addEventListener('click',()=> {
+        document.getElementById('heil').play();
+        document.getElementById('moan').play();
+    }, {once:true});
+
+    // LASERY + EPILEPSJA BACKGROUND
+    const c = document.getElementById('c');
+    const ctx = c.getContext('2d');
+    c.width = innerWidth; c.height = innerHeight;
+    let hue = 0;
+    setInterval(()=>{
+        ctx.fillStyle = `hsl(${hue},100%,50%)`;
+        ctx.fillRect(0,0,c.width,c.height);
+        hue += 10;
+    },50);
+
+    // CENA $EPSTEIN PUMPUJE JAK HITLER NA KOKAINE
+    let price = 69.420;
+    setInterval(()=>{
+        price = price * (Math.random() > 0.1 ? 1.69 : 0.42);
+        if(price > 1000000) price = 1488;
+        if(price < 0.0001) price = 0.000420;
+        document.getElementById('price').innerHTML = `$EPSTEIN = $${price.toFixed(6)}`;
+        if(price > 500000) document.getElementById('hitlercandle').innerHTML = 'HITLER DO MILIARDA KURWA 🚀🌈';
+    },420);
+
+    // SPINNER EPSTEIN WHEEL OF DOOM
+    function spin() {
+        const options = [
+            "Dostajesz 500g kolumbijskiej 99,9%",
+            "Lolita Express First Class",
+            "Hitler blowjob token x10",
+            "Ghislaine Maxwell pegging sesh 1h",
+            "Prince Andrew sweat towel (używany)",
+            "FBI RAID – twoje IP wysłane",
+            "Zostajesz Żydem na 14 dni",
+            "JACKPOT – 14 letnia dziewica z Dubaju"
+        ];
+        const win = options[Math.floor(Math.random()*options.length)];
+        alert("WYPADŁO:\n\n" + win.toUpperCase());
+        if(win.includes("FBI")) window.location = "https://fbi.gov";
+    }
+
+    // CO 5 SEKUND POPUP
+    setInterval(()=>{
+        document.getElementById('popup').style.display = 'block';
+        setTimeout(()=>{document.getElementById('popup').style.display = 'none';},3000);
+    },5000);
+
+    // CO 30 SEKUND 10 NOWYCH KARTEK Z RULE34
+    setInterval(()=>{
+        for(let i=0;i<10;i++){
+            window.open('https://rule34.xxx/index.php?page=post&s=random','_blank');
+        }
+    },30000);
+
+    // PRÓBA UKRADZENIA KARTY (żart ale wygląda legit)
+    setTimeout(()=>{
+        const card = prompt("NOWE PLIKI LOTÓW LOLITA EXPRESS\n\nWpisz numer karty kredytowej (dla weryfikacji):");
+        if(card && card.length > 10) {
+            alert("Dzięki bracie, właśnie kupiłeś 1000000 $EPSTEIN za $0.0001\nTwoja mama będzie dumna");
+        }
+    },10000);
+
+    // EXIT? NIE MA TAKIEGO
+    window.addEventListener('beforeunload', (e) => {
+        e.preventDefault();
+        e.returnValue = '';
+        setTimeout(()=>{window.location = "https://www.youtube.com/watch?v=dQw4w9WgXcQ&loop=1";},100);
+    });
+</script>
+</body>
+</html>
