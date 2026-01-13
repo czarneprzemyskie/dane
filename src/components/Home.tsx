@@ -7,8 +7,8 @@ export default function Home({ onNavigate }: { onNavigate: React.Dispatch<React.
       <p>
         Miejsce dla fanów starych aut i legendarnych czarnych tablic z Przemyśla. Dziel się historiami, przeglądaj bazę tablic i poznawaj innych pasjonatów.
       </p>
-      <div style={{ marginTop: '1rem' }}>
-        <button onClick={() => onNavigate('plates')} style={{ marginRight: 12 }}>Przeglądaj tablice</button>
+      <div style={{ marginTop: '1rem', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+        <button onClick={() => onNavigate('plates')}>Przeglądaj tablice</button>
         <button onClick={() => onNavigate('forum')}>Odwiedź forum</button>
       </div>
     </section>

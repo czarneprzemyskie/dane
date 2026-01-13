@@ -29,9 +29,9 @@ export default function Plates() {
   return (
     <section>
       <h2>Czarne tablice rejestracyjne — Przemyśl</h2>
-      <div style={{ marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
-        <input placeholder="Szukaj po tablicy lub notatce" value={query} onChange={(e) => setQuery(e.target.value)} style={{ flex: 1 }} />
-        <button onClick={() => setShowForm((s) => !s)} style={{ marginLeft: 0 }}>Zgłoś tablicę</button>
+      <div style={{ marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <input placeholder="Szukaj po tablicy lub notatce" value={query} onChange={(e) => setQuery(e.target.value)} style={{ flex: '1 1 200px', minWidth: 0 }} />
+        <button onClick={() => setShowForm((s) => !s)} style={{ flexShrink: 0 }}>Zgłoś tablicę</button>
       </div>
 
       {showForm && <PlateForm onSubmit={submitNew} onCancel={() => setShowForm(false)} />}
@@ -40,9 +40,9 @@ export default function Plates() {
         {results.length === 0 && <div>Brak tablic w bazie.</div>}
         {results.map((p) => (
           <div key={p.id} style={{ padding: 8, borderBottom: '1px solid #333' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ fontWeight: 'bold' }}>{p.registration}</div>
-              <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ fontWeight: 'bold', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.registration}</div>
+              <div style={{ flexShrink: 0 }}>
                 {p.owner === currentUser()?.username && (
                   <button
                     onClick={() => {
@@ -51,7 +51,6 @@ export default function Plates() {
                         setList(getPlates());
                       }
                     }}
-                    style={{ marginLeft: 8 }}
                   >
                     Usuń
                   </button>

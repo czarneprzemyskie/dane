@@ -34,8 +34,8 @@ export default function Blog() {
         {posts.length === 0 && <div>Brak postów — bądź pierwszy!</div>}
         {posts.map((p) => (
           <article key={p.id} style={{ padding: 8, borderBottom: '1px solid #333' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0 }}>{p.title}</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <h3 style={{ margin: 0, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', flex: '1 1 auto' }}>{p.title}</h3>
               {p.author === currentUser()?.username && (
                 <button
                   onClick={() => {
@@ -44,7 +44,7 @@ export default function Blog() {
                       setPosts(getPosts());
                     }
                   }}
-                  style={{ marginLeft: 8 }}
+                  style={{ flexShrink: 0 }}
                 >
                   Usuń
                 </button>
