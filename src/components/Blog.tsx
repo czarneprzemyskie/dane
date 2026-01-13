@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addPost, getPosts } from '../lib/storage.ts';
+import { addPost, getPosts, removePost } from '../lib/storage.ts';
 import type { Post } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
 
@@ -34,7 +34,22 @@ export default function Blog() {
         {posts.length === 0 && <div>Brak postów — bądź pierwszy!</div>}
         {posts.map((p) => (
           <article key={p.id} style={{ padding: 8, borderBottom: '1px solid #333' }}>
-            <h3 style={{ margin: 0 }}>{p.title}</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ margin: 0 }}>{p.title}</h3>
+              {p.author === currentUser()?.username && (
+                <button
+                  onClick={() => {
+                    if (window.confirm('Na pewno chcesz usunąć ten post?')) {
+                      removePost(p.id);
+                      setPosts(getPosts());
+                    }
+                  }}
+                  style={{ marginLeft: 8 }}
+                >
+                  Usuń
+                </button>
+              )}
+            </div>
             <div style={{ fontSize: 12, color: '#ccc' }}>autor: {p.author} • {new Date(p.createdAt).toLocaleString()}</div>
             <p style={{ marginTop: 8 }}>{p.body}</p>
           </article>

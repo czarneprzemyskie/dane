@@ -88,3 +88,21 @@ export function addPost(post: Post) {
   posts.unshift(post);
   savePosts(posts);
 }
+
+export function removePlate(id: string): boolean {
+  const list = getPlates();
+  const idx = list.findIndex((p) => p.id === id);
+  if (idx === -1) return false;
+  list.splice(idx, 1);
+  savePlates(list);
+  return true;
+}
+
+export function removePost(id: string): boolean {
+  const posts = getPosts();
+  const idx = posts.findIndex((p) => p.id === id);
+  if (idx === -1) return false;
+  posts.splice(idx, 1);
+  savePosts(posts);
+  return true;
+}

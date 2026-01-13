@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { addPlate, getPlates, searchPlates } from '../lib/storage.ts';
+import { addPlate, getPlates, searchPlates, removePlate } from '../lib/storage.ts';
 import type { Plate } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
 
@@ -40,7 +40,24 @@ export default function Plates() {
         {results.length === 0 && <div>Brak tablic w bazie.</div>}
         {results.map((p) => (
           <div key={p.id} style={{ padding: 8, borderBottom: '1px solid #333' }}>
-            <div style={{ fontWeight: 'bold' }}>{p.registration}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ fontWeight: 'bold' }}>{p.registration}</div>
+              <div>
+                {p.owner === currentUser()?.username && (
+                  <button
+                    onClick={() => {
+                      if (window.confirm('Na pewno chcesz usunąć tę tablicę?')) {
+                        removePlate(p.id);
+                        setList(getPlates());
+                      }
+                    }}
+                    style={{ marginLeft: 8 }}
+                  >
+                    Usuń
+                  </button>
+                )}
+              </div>
+            </div>
             <div style={{ fontSize: 12, color: '#ccc' }}>{p.owner ? `Dodane przez ${p.owner}` : 'Anonimowo'}</div>
             {p.notes && <div style={{ marginTop: 6 }}>{p.notes}</div>}
           </div>
