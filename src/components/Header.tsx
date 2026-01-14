@@ -43,28 +43,30 @@ export default function Header({ onNavigate }: { onNavigate: (r: string) => void
         )}
       </div>
 
-      <div className="mobile-only" style={{ marginLeft: 'auto' }}>
-        <button aria-expanded={open} aria-haspopup="true" className="nav-link" onClick={() => setOpen((s) => !s)}>☰</button>
-      </div>
-
-      {open && (
-        <div className="header-menu" ref={menuRef}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <a className="nav-link" onClick={() => { onNavigate('history'); setOpen(false); }}>Historia</a>
-            <a className="nav-link" onClick={() => { onNavigate('rejonizacja'); setOpen(false); }}>Rejonizacja</a>
-            <a className="nav-link" onClick={() => { onNavigate('plates'); setOpen(false); }}>Baza tablic</a>
-            <a className="nav-link" onClick={() => { onNavigate('forum'); setOpen(false); }}>Forum</a>
-            {user ? (
-              <>
-                <button className="nav-link" onClick={() => { onNavigate('profile'); setOpen(false); }}>{user.username}</button>
-                <button className="nav-link" onClick={() => { handleLogout(); setOpen(false); }}>Wyloguj</button>
-              </>
-            ) : (
-              <button className="nav-link" onClick={() => { onNavigate('login'); setOpen(false); }}>Logowanie</button>
-            )}
-          </div>
+      <div ref={menuRef} style={{ marginLeft: 'auto' }}>
+        <div className="mobile-only">
+          <button aria-expanded={open} aria-haspopup="true" className="nav-link" onClick={() => setOpen((s) => !s)}>☰</button>
         </div>
-      )}
+
+        {open && (
+          <div className="header-menu">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <a className="nav-link" onClick={() => { onNavigate('history'); setOpen(false); }}>Historia</a>
+              <a className="nav-link" onClick={() => { onNavigate('rejonizacja'); setOpen(false); }}>Rejonizacja</a>
+              <a className="nav-link" onClick={() => { onNavigate('plates'); setOpen(false); }}>Baza tablic</a>
+              <a className="nav-link" onClick={() => { onNavigate('forum'); setOpen(false); }}>Forum</a>
+              {user ? (
+                <>
+                  <button className="nav-link" onClick={() => { onNavigate('profile'); setOpen(false); }}>{user.username}</button>
+                  <button className="nav-link" onClick={() => { handleLogout(); setOpen(false); }}>Wyloguj</button>
+                </>
+              ) : (
+                <button className="nav-link" onClick={() => { onNavigate('login'); setOpen(false); }}>Logowanie</button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
 }
