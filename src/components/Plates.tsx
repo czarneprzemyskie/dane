@@ -10,19 +10,34 @@ function makeId() {
 export default function Plates() {
   const [query, setQuery] = useState('');
   const [list, setList] = useState<Plate[]>([]);
+  const [results, setResults] = useState<Plate[]>([]);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    setList(getPlates());
+    (async () => {
+      const data = await getPlates();
+      setList(data);
+      setResults(data);
+    })();
   }, []);
 
-  const results = useMemo(() => (query ? searchPlates(query) : list), [query, list]);
+  useEffect(() => {
+    (async () => {
+      if (!query) {
+        setResults(list);
+        return;
+      }
+      const res = await searchPlates(query);
+      setResults(res);
+    })();
+  }, [query, list]);
 
-  function submitNew(reg: string, notes: string) {
+  async function submitNew(reg: string, notes: string) {
     const user = currentUser();
     const p: Plate = { id: makeId(), registration: reg.toUpperCase(), owner: user?.username ?? null, notes, createdAt: new Date().toISOString() };
-    addPlate(p);
-    setList(getPlates());
+    await addPlate(p);
+    const updated = await getPlates();
+    setList(updated);
     setShowForm(false);
   }
 
@@ -45,10 +60,11 @@ export default function Plates() {
               <div style={{ flexShrink: 0 }}>
                 {p.owner === currentUser()?.username && (
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (window.confirm('Na pewno chcesz usunąć tę tablicę?')) {
-                        removePlate(p.id);
-                        setList(getPlates());
+                        await removePlate(p.id);
+                        const updated = await getPlates();
+                        setList(updated);
                       }
                     }}
                   >

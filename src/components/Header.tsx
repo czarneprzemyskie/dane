@@ -15,8 +15,8 @@ export default function Header({ onNavigate }: { onNavigate: (r: string) => void
     return () => document.removeEventListener('click', onDoc);
   }, []);
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     onNavigate('home');
   }
 

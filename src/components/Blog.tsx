@@ -10,14 +10,20 @@ export default function Blog() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
-  useEffect(() => { setPosts(getPosts()); }, []);
+  useEffect(() => {
+    (async () => {
+      const p = await getPosts();
+      setPosts(p);
+    })();
+  }, []);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const user = currentUser();
     const p: Post = { id: makeId(), author: user?.username ?? 'Anonymous', title: title || 'Untitled', body, createdAt: new Date().toISOString() };
-    addPost(p);
-    setPosts(getPosts());
+    await addPost(p);
+    const updated = await getPosts();
+    setPosts(updated);
     setTitle(''); setBody('');
   }
 
@@ -38,10 +44,11 @@ export default function Blog() {
               <h3 style={{ margin: 0, minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', flex: '1 1 auto' }}>{p.title}</h3>
               {p.author === currentUser()?.username && (
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     if (window.confirm('Na pewno chcesz usunąć ten post?')) {
-                      removePost(p.id);
-                      setPosts(getPosts());
+                      await removePost(p.id);
+                      const updated = await getPosts();
+                      setPosts(updated);
                     }
                   }}
                   style={{ flexShrink: 0 }}

@@ -7,9 +7,9 @@ export default function Register({ onRegistered }: { onRegistered?: () => void }
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = register(username, password);
+    const res = await register(username, password);
     if (!res.ok) setMsg(res.error || 'Error');
     else {
       setMsg('Registered — please login');

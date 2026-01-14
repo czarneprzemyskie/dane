@@ -6,9 +6,9 @@ export default function Login({ onLoggedIn }: { onLoggedIn?: () => void }) {
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = login(username, password);
+    const res = await login(username, password);
     if (!res.ok) setMsg(res.error || 'Error');
     else {
       setMsg('Logged in');

@@ -1,7 +1,8 @@
+import { supabase, mapPost, mapPlate } from './db';
+
 export type User = {
   id: string;
   username: string;
-  password: string; // simple hash for demo
 };
 
 export type Plate = {
@@ -20,89 +21,45 @@ export type Post = {
   createdAt: string;
 };
 
-const USERS_KEY = 'czp_users';
-const PLATES_KEY = 'czp_plates';
-const POSTS_KEY = 'czp_posts';
-
-function read<T>(key: string): T | null {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch (e) {
-    return null;
-  }
+export async function getPlates(): Promise<Plate[]> {
+  const { data, error } = await supabase.from('plates').select('id,registration,owner,notes,created_at').order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map(mapPlate) as Plate[];
 }
 
-function write<T>(key: string, data: T) {
-  localStorage.setItem(key, JSON.stringify(data));
+export async function addPlate(p: Plate) {
+  const { error } = await supabase.from('plates').insert([{ id: p.id, registration: p.registration, owner: p.owner, notes: p.notes, created_at: p.createdAt }]);
+  if (error) throw error;
 }
 
-export function getUsers(): User[] {
-  return read<User[]>(USERS_KEY) ?? [];
-}
-
-export function saveUsers(users: User[]) {
-  write(USERS_KEY, users);
-}
-
-export function addUser(u: User) {
-  const users = getUsers();
-  users.push(u);
-  saveUsers(users);
-}
-
-export function getUserByUsername(username: string): User | undefined {
-  return getUsers().find((u) => u.username === username);
-}
-
-export function getPlates(): Plate[] {
-  return read<Plate[]>(PLATES_KEY) ?? [];
-}
-
-export function savePlates(list: Plate[]) {
-  write(PLATES_KEY, list);
-}
-
-export function addPlate(p: Plate) {
-  const list = getPlates();
-  list.unshift(p);
-  savePlates(list);
-}
-
-export function searchPlates(q: string): Plate[] {
-  const s = q.trim().toLowerCase();
+export async function searchPlates(q: string): Promise<Plate[]> {
+  const s = q.trim();
   if (!s) return getPlates();
-  return getPlates().filter((p) => p.registration.toLowerCase().includes(s) || (p.notes || '').toLowerCase().includes(s));
+  const pattern = `%${s}%`;
+  const { data, error } = await supabase.from('plates').select('id,registration,owner,notes,created_at').or(`registration.ilike.${pattern},notes.ilike.${pattern}`);
+  if (error) throw error;
+  return (data ?? []).map(mapPlate) as Plate[];
 }
 
-export function getPosts(): Post[] {
-  return read<Post[]>(POSTS_KEY) ?? [];
-}
-
-export function savePosts(posts: Post[]) {
-  write(POSTS_KEY, posts);
-}
-
-export function addPost(post: Post) {
-  const posts = getPosts();
-  posts.unshift(post);
-  savePosts(posts);
-}
-
-export function removePlate(id: string): boolean {
-  const list = getPlates();
-  const idx = list.findIndex((p) => p.id === id);
-  if (idx === -1) return false;
-  list.splice(idx, 1);
-  savePlates(list);
+export async function removePlate(id: string): Promise<boolean> {
+  const { error } = await supabase.from('plates').delete().eq('id', id);
+  if (error) return false;
   return true;
 }
 
-export function removePost(id: string): boolean {
-  const posts = getPosts();
-  const idx = posts.findIndex((p) => p.id === id);
-  if (idx === -1) return false;
-  posts.splice(idx, 1);
-  savePosts(posts);
+export async function getPosts(): Promise<Post[]> {
+  const { data, error } = await supabase.from('posts').select('id,author,title,body,created_at').order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map(mapPost) as Post[];
+}
+
+export async function addPost(post: Post) {
+  const { error } = await supabase.from('posts').insert([{ id: post.id, author: post.author, title: post.title, body: post.body, created_at: post.createdAt }]);
+  if (error) throw error;
+}
+
+export async function removePost(id: string): Promise<boolean> {
+  const { error } = await supabase.from('posts').delete().eq('id', id);
+  if (error) return false;
   return true;
 }

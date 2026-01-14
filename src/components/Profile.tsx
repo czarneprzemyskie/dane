@@ -8,7 +8,11 @@ export default function Profile() {
   const [plates, setPlates] = useState<Plate[]>([]);
 
   useEffect(() => {
-    if (user) setPlates(getPlates().filter((p) => p.owner === user.username));
+    (async () => {
+      if (!user) return;
+      const all = await getPlates();
+      setPlates(all.filter((p) => p.owner === user.username));
+    })();
   }, [user]);
 
   if (!user) return <div>Zaloguj się, aby zobaczyć swój profil.</div>;
@@ -24,10 +28,11 @@ export default function Profile() {
             <div style={{ fontWeight: 'bold' }}>{p.registration}</div>
             <div>
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (window.confirm('Na pewno chcesz usunąć tę tablicę?')) {
-                    removePlate(p.id);
-                    setPlates(getPlates().filter((pl) => pl.owner === user!.username));
+                    await removePlate(p.id);
+                    const all = await getPlates();
+                    setPlates(all.filter((pl) => pl.owner === user!.username));
                   }
                 }}
               >
