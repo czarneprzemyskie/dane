@@ -26,7 +26,7 @@ export default function Header({ onNavigate, latestPlate }: { onNavigate: (r: st
         <img className="logo" src="/ikona.png" alt="ikona" onClick={() => onNavigate('home')} style={{ cursor: 'pointer', flexShrink: 0 }} />
         <div className="brand" style={{ minWidth: 0, overflow: 'hidden' }}>
           <h1 onClick={() => onNavigate('home')} style={{ cursor: 'pointer' }}>Czarne Przemyskie</h1>
-          <p className="subtitle">Blog i forum miłośników zabytkowych aut</p>
+          <p className="subtitle">Blog i forum miłośników czarnych tablic z woj. Przemyskiego</p>
         </div>
       </div>
 
