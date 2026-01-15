@@ -10,7 +10,7 @@ import Login from './components/Login';
 import Profile from './components/Profile';
 import Blog from './components/Blog';
 import Header from './components/Header';
-import { currentUser, logout } from './lib/auth';
+import { currentUser } from './lib/auth';
 
 type Route = 'home' | 'plates' | 'forum' | 'register' | 'login' | 'profile' | 'history' | 'rejonizacja';
 
@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="retro-bg">
       <div className="container">
-        <Header onNavigate={setRoute} />
+        <Header onNavigate={(r: string) => setRoute(r as Route)} />
         <nav className="retro-nav">
           <button className="nav-link" onClick={() => setRoute('history')}>Historia</button>
           <button className="nav-link" onClick={() => setRoute('rejonizacja')}>Rejonizacja</button>

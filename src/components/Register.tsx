@@ -23,7 +23,9 @@ export default function Register({ onRegistered }: { onRegistered?: () => void }
       <h2>Utwórz konto</h2>
       <form onSubmit={submit} style={{ display: 'grid', gap: 8, width: '100%' }}>
         <input placeholder="Nazwa użytkownika" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <div style={{ fontSize: 12, color: '#666' }}>Proszę używać tylko liter, cyfr, '-' '_' '.'; polskie znaki zostaną znormalizowane.</div>
         <input placeholder="Hasło" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <div style={{ fontSize: 12, color: '#666' }}>Hasło musi mieć co najmniej 6 znaków.</div>
         <div>
           <button type="submit">Zarejestruj</button>
         </div>

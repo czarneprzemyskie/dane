@@ -21,6 +21,7 @@ export default function Login({ onLoggedIn }: { onLoggedIn?: () => void }) {
       <h2>Logowanie</h2>
       <form onSubmit={submit} style={{ display: 'grid', gap: 8, width: '100%' }}>
         <input placeholder="Nazwa użytkownika" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <div style={{ fontSize: 12, color: '#666' }}>Polskie znaki zostaną znormalizowane; użyj liter i cyfr.</div>
         <input placeholder="Hasło" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <div>
           <button type="submit">Zaloguj</button>

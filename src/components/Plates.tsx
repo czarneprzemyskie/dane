@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { addPlate, getPlates, searchPlates, removePlate } from '../lib/storage.ts';
 import type { Plate } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
