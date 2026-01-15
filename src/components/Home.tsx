@@ -3,7 +3,7 @@ import React from 'react';
 export default function Home({ onNavigate }: { onNavigate: React.Dispatch<React.SetStateAction<any>> }) {
   return (
     <section>
-      <h2>Witaj w społeczności miłośników klasyków!</h2>
+      <h2>Witaj w społeczności miłośników czarnych tablic!</h2>
       <p>
         Miejsce dla fanów starych aut i legendarnych czarnych tablic z Przemyśla. Dziel się historiami, przeglądaj bazę tablic i poznawaj innych pasjonatów.
       </p>
