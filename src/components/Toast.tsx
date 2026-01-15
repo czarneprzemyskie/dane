@@ -14,7 +14,7 @@ interface ToastProps {
 
 const Toast: React.FC<ToastProps> = ({ statusMsg }) => {
   return (
-    <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[100001] pointer-events-none flex flex-col items-center gap-2">
+    <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[999999] pointer-events-none flex flex-col items-center gap-2" style={{zIndex:999999, pointerEvents:'none'}}>
       {statusMsg.map((msg) => {
         const isError = msg.type === 'error';
         return (
@@ -33,7 +33,9 @@ const Toast: React.FC<ToastProps> = ({ statusMsg }) => {
             style={{
               animation: 'slideInDown 0.3s ease-out',
               transform: `translateY(0)`,
-              opacity: 1
+              opacity: 1,
+              zIndex: 999999,
+              pointerEvents: 'auto'
             }}
           >
             <div className="flex-shrink-0">
