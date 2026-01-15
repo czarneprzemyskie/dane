@@ -23,10 +23,10 @@ function App() {
       <div className="container">
         <Header onNavigate={(r: string) => setRoute(r as Route)} />
         <nav className="retro-nav">
-          <button className="nav-link" onClick={() => setRoute('history')}>Historia</button>
-          <button className="nav-link" onClick={() => setRoute('rejonizacja')}>Rejonizacja</button>
           <button className="nav-link" onClick={() => setRoute('plates')}>Baza tablic</button>
           <button className="nav-link" onClick={() => setRoute('forum')}>Forum</button>
+          <button className="nav-link" onClick={() => setRoute('history')}>Historia</button>
+          <button className="nav-link" onClick={() => setRoute('rejonizacja')}>Rejonizacja</button>
           {user ? null : (
             <>
               <button className="nav-link" onClick={() => setRoute('register')}>Rejestracja</button>
