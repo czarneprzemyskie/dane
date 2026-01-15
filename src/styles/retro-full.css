@@ -163,6 +163,7 @@ html, body {
   max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #fff;
 }
 .social-link, .plate-demo { 
   flex-shrink: 0; 
