@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { currentUser, logout } from '../lib/auth';
 
-export default function Header({ onNavigate }: { onNavigate: (r: string) => void }) {
+export default function Header({ onNavigate, latestPlate }: { onNavigate: (r: string) => void, latestPlate: string }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const user = currentUser();
@@ -32,7 +32,7 @@ export default function Header({ onNavigate }: { onNavigate: (r: string) => void
 
       <div className="header-actions desktop-only">
         <a className="social-link" href="https://www.facebook.com/czarneprzemyskie" target="_blank" rel="noopener noreferrer">Facebook</a>
-        <div className="plate-demo">PRW 5737</div>
+        <div className="plate-demo">{latestPlate}</div>
         {user ? (
           <>
             <button className="nav-link profile-btn" onClick={() => onNavigate('profile')}>{user.username}</button>

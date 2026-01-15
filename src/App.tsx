@@ -2,26 +2,49 @@
 import './styles/retro-full.css';
 import { useState } from 'react';
 import Home from './components/Home';
-import Plates from './components/Plates';
+import { Plates } from './components/Plates';
 import History from './components/History';
 import Rejonizacja from './components/Rejonizacja';
 import Register from './components/Register';
 import Login from './components/Login';
 import Profile from './components/Profile';
+import { useEffect } from 'react';
+import { getVisitorCount, incrementVisitorCount } from './lib/visitorCount';
 import Blog from './components/Blog';
 import Header from './components/Header';
+import { getPlates } from './lib/storage';
 import { currentUser } from './lib/auth';
 
 type Route = 'home' | 'plates' | 'forum' | 'register' | 'login' | 'profile' | 'history' | 'rejonizacja';
 
 function App() {
+
   const [route, setRoute] = useState<Route>('home');
   const user = currentUser();
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
+  const [latestPlate, setLatestPlate] = useState<string>('PRW 5737');
+
+  useEffect(() => {
+    // Increment visitor count on mount
+    incrementVisitorCount()
+      .then(() => getVisitorCount())
+      .then(setVisitorCount)
+      .catch(() => setVisitorCount(null));
+
+    // Fetch latest plate
+    getPlates()
+      .then((plates) => {
+        if (plates && plates.length > 0) {
+          setLatestPlate(plates[0].registration);
+        }
+      })
+      .catch(() => setLatestPlate('PRW 5737'));
+  }, []);
 
   return (
     <div className="retro-bg">
       <div className="container">
-        <Header onNavigate={(r: string) => setRoute(r as Route)} />
+        <Header onNavigate={(r: string) => setRoute(r as Route)} latestPlate={latestPlate} />
         <nav className="retro-nav">
           <button className="nav-link" onClick={() => setRoute('plates')}>Baza tablic</button>
           <button className="nav-link" onClick={() => setRoute('forum')}>Forum</button>
@@ -46,7 +69,9 @@ function App() {
         </main>
 
         <footer className="retro-footer">
-          &copy; 2026 CzarnePrzemysl — Wszelkie prawa zastrzeżone
+            &copy; 2026 Czarne Przemyskie — Wszelkie prawa zastrzeżone
+            <br />
+            <span>Odwiedziny: {visitorCount !== null ? visitorCount : '...'}</span>
         </footer>
       </div>
     </div>
