@@ -23,7 +23,7 @@ export default function Header({ onNavigate }: { onNavigate: (r: string) => void
   return (
     <header className="retro-header header-component" role="banner">
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}>
-        <img className="logo" src="/src/assets/ikona.png" alt="ikona" onClick={() => onNavigate('home')} style={{ cursor: 'pointer', flexShrink: 0 }} />
+        <img className="logo" src="/ikona.png" alt="ikona" onClick={() => onNavigate('home')} style={{ cursor: 'pointer', flexShrink: 0 }} />
         <div className="brand" style={{ minWidth: 0, overflow: 'hidden' }}>
           <h1 onClick={() => onNavigate('home')} style={{ cursor: 'pointer' }}>Czarne Przemyskie</h1>
           <p className="subtitle">Blog i forum miłośników zabytkowych aut</p>
