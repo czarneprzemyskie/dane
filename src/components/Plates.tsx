@@ -1,25 +1,43 @@
 import { useEffect, useState } from 'react';
 import Toast from './Toast';
 import { addPlate, getPlates, searchPlates, removePlate } from '../lib/storage.ts';
+import { supabase } from '../lib/db';
 import type { Plate } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
+import type { ToastMsg } from './Toast';
 
 function makeId() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-export function Plates() {
+export function Plates({ statusMsg, setStatusMsg }: { statusMsg: ToastMsg | null; setStatusMsg: React.Dispatch<React.SetStateAction<ToastMsg | null>> }) {
   const [query, setQuery] = useState('');
   const [list, setList] = useState<Plate[]>([]);
   const [results, setResults] = useState<Plate[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [statusMsg, setStatusMsg] = useState<{ id: number, text: string, type: 'error' | 'success' }[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editReg, setEditReg] = useState('');
+  const [editNotes, setEditNotes] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUsername, setCurrentUsername] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       const data = await getPlates();
       setList(data);
       setResults(data);
+      // determine if current user is admin
+      try {
+        const { data } = await supabase.auth.getUser();
+        const uid = data?.user?.id;
+        if (uid) {
+          const { data: profile } = await supabase.from('profiles').select('is_admin,username').eq('id', uid).limit(1).single();
+          if (profile && profile.is_admin) setIsAdmin(true);
+          if (profile && profile.username) setCurrentUsername(profile.username);
+        }
+      } catch (e) {
+        // ignore
+      }
     })();
   }, []);
 
@@ -38,10 +56,7 @@ export function Plates() {
     const formattedReg = reg.toUpperCase();
     // Check for duplicates
     if (list.some((p) => p.registration === formattedReg)) {
-      setStatusMsg((msgs) => [
-        ...msgs,
-        { id: Date.now(), text: 'Tablica o takim numerze już istnieje w bazie.', type: 'error' }
-      ]);
+      setStatusMsg({ id: Date.now(), text: 'Tablica o takim numerze już istnieje w bazie.', type: 'error' });
       return;
     }
     const user = currentUser();
@@ -50,24 +65,13 @@ export function Plates() {
     const updated = await getPlates();
     setList(updated);
     setShowForm(false);
-    setStatusMsg((msgs) => [
-      ...msgs,
-      { id: Date.now(), text: 'Tablica została dodana!', type: 'success' }
-    ]);
+    setStatusMsg({ id: Date.now(), text: 'Tablica została dodana!', type: 'success' });
   }
 
-  // Remove toasts after 3 seconds
-  useEffect(() => {
-    if (statusMsg.length === 0) return;
-    const timer = setTimeout(() => {
-      setStatusMsg((msgs) => msgs.slice(1));
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, [statusMsg]);
+
 
   return (
     <>
-      <Toast statusMsg={statusMsg} />
       <section>
       <h2>Czarne tablice rejestracyjne — Przemyśl</h2>
       <div style={{ marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -84,18 +88,21 @@ export function Plates() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
               <div style={{ fontWeight: 'bold', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.registration}</div>
               <div style={{ flexShrink: 0 }}>
-                {p.owner === currentUser()?.username && (
+                {(p.owner === currentUsername || isAdmin) && (
                   <button
                     onClick={async () => {
-                      if (window.confirm('Na pewno chcesz usunąć tę tablicę?')) {
-                        await removePlate(p.id);
+                      if (!window.confirm('Na pewno chcesz usunąć tę tablicę?')) return;
+                      const ok = await removePlate(p.id);
+                      if (ok) {
                         const updated = await getPlates();
                         setList(updated);
+                        setResults(updated);
+                        setStatusMsg({ id: Date.now(), text: 'Usunięto tablicę', type: 'success' });
+                      } else {
+                        setStatusMsg({ id: Date.now(), text: 'Błąd podczas usuwania', type: 'error' });
                       }
                     }}
-                  >
-                    Usuń
-                  </button>
+                  >Usuń</button>
                 )}
               </div>
             </div>

@@ -3,6 +3,8 @@ import './styles/retro-full.css';
 import { useState } from 'react';
 import Home from './components/Home';
 import { Plates } from './components/Plates';
+import Toast from './components/Toast';
+import type { ToastMsg } from './components/Toast';
 import History from './components/History';
 import Rejonizacja from './components/Rejonizacja';
 import Register from './components/Register';
@@ -23,6 +25,7 @@ function App() {
   const user = currentUser();
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   const [latestPlate, setLatestPlate] = useState<string>('PRW 5737');
+  const [statusMsg, setStatusMsg] = useState<ToastMsg | null>(null);
 
   useEffect(() => {
     // Increment visitor count on mount
@@ -40,6 +43,13 @@ function App() {
       })
       .catch(() => setLatestPlate('PRW 5737'));
   }, []);
+
+  // Debug: log toast state in dev
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.debug('App statusMsg changed:', statusMsg);
+    }
+  }, [statusMsg]);
 
   return (
     <div className="retro-bg">
@@ -59,13 +69,13 @@ function App() {
 
         <main className="retro-main">
           {route === 'home' && <Home onNavigate={setRoute} />}
-          {route === 'plates' && <Plates />}
+          {route === 'plates' && <Plates statusMsg={statusMsg} setStatusMsg={setStatusMsg} />}
           {route === 'history' && <History />}
           {route === 'rejonizacja' && <Rejonizacja />}
           {route === 'register' && <Register onRegistered={() => setRoute('login')} />}
           {route === 'login' && <Login onLoggedIn={() => setRoute('profile')} />}
-          {route === 'profile' && <Profile />}
-          {route === 'forum' && <Blog />}
+          {route === 'profile' && <Profile statusMsg={statusMsg} setStatusMsg={setStatusMsg} />}
+          {route === 'forum' && <Blog setStatusMsg={setStatusMsg} />}
         </main>
 
         <footer className="retro-footer">
@@ -74,6 +84,7 @@ function App() {
             <span>Odwiedziny: {visitorCount !== null ? visitorCount : '...'}</span>
         </footer>
       </div>
+      <Toast statusMsg={statusMsg} setStatusMsg={setStatusMsg} />
     </div>
   );
 }
