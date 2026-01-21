@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import Toast from './Toast';
 import { addPlate, getPlates, searchPlates, removePlate } from '../lib/storage.ts';
 import { supabase } from '../lib/db';
 import type { Plate } from '../lib/storage.ts';
@@ -10,14 +9,11 @@ function makeId() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-export function Plates({ statusMsg, setStatusMsg }: { statusMsg: ToastMsg | null; setStatusMsg: React.Dispatch<React.SetStateAction<ToastMsg | null>> }) {
+export function Plates({ setStatusMsg }: { setStatusMsg: React.Dispatch<React.SetStateAction<ToastMsg | null>> }) {
   const [query, setQuery] = useState('');
   const [list, setList] = useState<Plate[]>([]);
   const [results, setResults] = useState<Plate[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editReg, setEditReg] = useState('');
-  const [editNotes, setEditNotes] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
 

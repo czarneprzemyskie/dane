@@ -5,7 +5,7 @@ import { getPlates, removePlate } from '../lib/storage.ts';
 import type { Plate } from '../lib/storage.ts';
 import type { ToastMsg } from './Toast';
 
-export default function Profile({ statusMsg, setStatusMsg }: { statusMsg: ToastMsg | null; setStatusMsg: React.Dispatch<React.SetStateAction<ToastMsg | null>> }) {  const user = currentUser();
+export default function Profile({ setStatusMsg }: { setStatusMsg: React.Dispatch<React.SetStateAction<ToastMsg | null>> }) {  const user = currentUser();
   const [plates, setPlates] = useState<Plate[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editReg, setEditReg] = useState('');

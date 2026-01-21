@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { login } from '../lib/auth';
 import { supabase } from '../lib/db';
 
-export default function Admin(): JSX.Element {
+export default function Admin(): React.ReactElement {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);

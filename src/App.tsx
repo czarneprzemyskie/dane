@@ -69,12 +69,12 @@ function App() {
 
         <main className="retro-main">
           {route === 'home' && <Home onNavigate={setRoute} />}
-          {route === 'plates' && <Plates statusMsg={statusMsg} setStatusMsg={setStatusMsg} />}
+          {route === 'plates' && <Plates setStatusMsg={setStatusMsg} />}
           {route === 'history' && <History />}
           {route === 'rejonizacja' && <Rejonizacja />}
           {route === 'register' && <Register onRegistered={() => setRoute('login')} />}
           {route === 'login' && <Login onLoggedIn={() => setRoute('profile')} />}
-          {route === 'profile' && <Profile statusMsg={statusMsg} setStatusMsg={setStatusMsg} />}
+          {route === 'profile' && <Profile setStatusMsg={setStatusMsg} />}
           {route === 'forum' && <Blog setStatusMsg={setStatusMsg} />}
         </main>
 
