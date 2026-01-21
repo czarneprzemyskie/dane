@@ -8,9 +8,9 @@ export default function History() {
       <h3>WSTĘP:PODZIAŁ ADMINISTRACYJNY WOJEWÓDZTWA PRZEMYSKIEGO (LATA 1975-1998):</h3>
       <p>Utworzone 1.06.1975 r. woj. przemyskie dzieliło się na następujące miasta, miasta i gminy oraz gminy:</p>
       <ul>
-        <li>miasta: Przemyśl, Jarosław, Lubaczów, Przeworsk.</li> <br>
-        <li>miasta i gminy: Cieszanów, Dynów, Kańczuga, Radymno, Sieniawa, Narol (od 1996r.), Oleszyce (od 1989r.).</li><br>
-        <li>gminy: Adamówka, Bircza, Chłopice, Dubiecko, Fredropol, Gać, Horyniec, Jarosław, Jawornik Polski, Krasiczyn, Krzywcza, Laszki, Lubaczów, Medyka, Narol (od 1996 r. miasto i gmina Narol), Oleszyce (od 1989 r. miasto i gmina Oleszyce), Orły, Pawłosiów, Pruchnik, Przemyśl, Przeworsk, Rokietnica, Roźwienica, Stary Dzików, Stubno, Tryńcza, Wiązownica, Wielkie Oczy, Zarzecze, Żurawica.</li><br>
+        <li>miasta: Przemyśl, Jarosław, Lubaczów, Przeworsk.</li> <br />
+        <li>miasta i gminy: Cieszanów, Dynów, Kańczuga, Radymno, Sieniawa, Narol (od 1996r.), Oleszyce (od 1989r.).</li><br />
+        <li>gminy: Adamówka, Bircza, Chłopice, Dubiecko, Fredropol, Gać, Horyniec, Jarosław, Jawornik Polski, Krasiczyn, Krzywcza, Laszki, Lubaczów, Medyka, Narol (od 1996 r. miasto i gmina Narol), Oleszyce (od 1989 r. miasto i gmina Oleszyce), Orły, Pawłosiów, Pruchnik, Przemyśl, Przeworsk, Rokietnica, Roźwienica, Stary Dzików, Stubno, Tryńcza, Wiązownica, Wielkie Oczy, Zarzecze, Żurawica.</li><br />
       </ul>
       <p>
         * W 01.07.1991 r. Podzielono miasto i gminę Dynów oraz miasto i gminę Radymno na dwie jednostki administracyjne.
