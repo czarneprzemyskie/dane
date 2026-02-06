@@ -562,6 +562,11 @@ input:focus, textarea:focus {
 * { 
   box-sizing: border-box; 
 }
+
+/* Hide reCAPTCHA badge */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
 html, body, .retro-bg { 
   width: 100%; 
   max-width: 100vw; 

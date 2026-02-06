@@ -3,17 +3,22 @@
 export default function Rejonizacja() {
   return (
     <section>
-      <h2>Rejonizacja</h2>
+      <h2>Rejonizacja tablic rejestracyjnych</h2>
       <p>
-        Sekcja wyjaśniająca system rejonizacji i sposób przypisywania tablic do regionów. Tutaj można opisać kody rejonowe, ich historię i obecne zasady.
+        Każdy polski pojazd ma przypisany konkretny symbol regionu — to te dwie litery na tablicy, które od razu zdradzają, skąd pochodzi auto. System wprowadzono w 2000 roku, zastępując stare oznaczenia z czasów PRL-u i zaborów. Dawniej tablice mówiły tylko o powiecie, teraz — o całym województwie.
       </p>
-      <h3>Propozycja struktury</h3>
+      <p>
+        Na stronie znajdziesz pełną listę kodów z podziałem na województwa, interaktywną mapkę oraz informacje o tym, jak zmieniały się granice administracyjne na przestrzeni lat. Jeśli kiedyś przepisywałeś tablice po zmianie miejsca zameldowania, wiesz, że procedura jest prosta, ale diabeł tkwi w szczegółach.
+      </p>
+      <h3>Co tutaj znajdziesz</h3>
       <ul>
-        <li>Lista kodów rejonowych i mapka</li>
-        <li>Zmiany w granicach administracyjnych</li>
-        <li>FAQ dotyczące przypisywania tablic</li>
+        <li><strong>Tabela kodów</strong> — wszystkie oznaczenia od BI po ZA z przypisanymi miastami i województwami</li>
+        <li><strong>Mapka interaktywna</strong> — kliknij region, zobaczysz, jakie tablice tam obowiązują</li>
+        <li><strong>FAQ</strong> — odpowiedzi na pytania o zmianę tablic, koszty i dokumenty</li>
       </ul>
-      <p>Jeśli masz dokumenty albo przykłady (np. PTR), wklej link — zintegrować je tutaj to prosta sprawa.</p>
+      <p>
+        Masz pod ręką stare tablice, dokumenty z różnych lat albo zdjęcia nietypowych oznaczeń? Podziel się nimi — chętnie dodamy je do kolekcji.
+      </p>
     </section>
   );
 }

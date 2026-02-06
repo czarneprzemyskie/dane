@@ -82,6 +82,8 @@ function App() {
             &copy; 2026 Czarne Przemyskie — Wszelkie prawa zastrzeżone
             <br />
             <span>Odwiedziny: {visitorCount !== null ? visitorCount : '...'}</span>
+            <br />
+            <span style={{ fontSize: '0.75rem', opacity: 0.6 }}>Ta strona jest chroniona przez reCAPTCHA i podlega Polityce prywatności oraz Warunkom korzystania z usług Google.</span>
         </footer>
       </div>
       <Toast statusMsg={statusMsg} setStatusMsg={setStatusMsg} />
