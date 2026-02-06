@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom base to match retro feel */
+/* Custom base to match the visual style */
 @layer base {
   /* Avoid applying unknown custom utilities during build — use explicit values */
   html, body {

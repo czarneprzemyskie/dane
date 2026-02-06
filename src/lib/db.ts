@@ -14,6 +14,7 @@ export function mapPost(row: any) {
     author: row.author,
     title: row.title,
     body: row.body,
+    photoUrl: row.photo_url ?? undefined,
     createdAt: row.created_at ?? row.createdAt,
   } as const;
 }
@@ -24,6 +25,7 @@ export function mapPlate(row: any) {
     registration: row.registration,
     owner: row.owner ?? null,
     notes: row.notes ?? undefined,
+    photoUrl: row.photo_url ?? undefined,
     createdAt: row.created_at ?? row.createdAt,
   } as const;
 }

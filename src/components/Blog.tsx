@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { ToastMsg } from './Toast';
-import { addPost, getPosts, removePost } from '../lib/storage.ts';
+import { addPost, getPosts, removePost, uploadImage } from '../lib/storage.ts';
 import { supabase } from '../lib/db';
 import type { Post } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
@@ -12,6 +12,12 @@ export default function Blog({ setStatusMsg }: { setStatusMsg?: React.Dispatch<R
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
   useEffect(() => {
     (async () => {
@@ -30,6 +36,36 @@ export default function Blog({ setStatusMsg }: { setStatusMsg?: React.Dispatch<R
     })();
   }, []);
 
+  useEffect(() => {
+    if (!photoFile) {
+      setPhotoPreview(null);
+      return;
+    }
+    const url = URL.createObjectURL(photoFile);
+    setPhotoPreview(url);
+    return () => URL.revokeObjectURL(url);
+  }, [photoFile]);
+
+  function handlePhotoChange(file: File | null) {
+    if (!file) {
+      setPhotoFile(null);
+      setPhotoError(null);
+      return;
+    }
+    if (!file.type.startsWith('image/')) {
+      setPhotoError('Wybierz plik graficzny.');
+      setPhotoFile(null);
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      setPhotoError('Zdjęcie jest za duże (maks. 5 MB).');
+      setPhotoFile(null);
+      return;
+    }
+    setPhotoError(null);
+    setPhotoFile(file);
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (title.trim().length < 5) {
@@ -40,23 +76,62 @@ export default function Blog({ setStatusMsg }: { setStatusMsg?: React.Dispatch<R
       setStatusMsg?.({ id: Date.now(), text: 'Opis musi mieć co najmniej 20 znaków.', type: 'error' });
       return;
     }
-    const user = currentUser();
-    const p: Post = { id: makeId(), author: user?.username ?? 'Anonymous', title: title || 'Untitled', body, createdAt: new Date().toISOString() };
-    await addPost(p);
-    const updated = await getPosts();
-    setPosts(updated);
-    setTitle(''); setBody('');
-    setStatusMsg?.({ id: Date.now(), text: 'Post został opublikowany!', type: 'success' });
+    setIsSubmitting(true);
+    try {
+      const user = currentUser();
+      const id = makeId();
+      let photoUrl: string | undefined;
+      if (photoFile) {
+        photoUrl = await uploadImage(photoFile, 'posts', id);
+      }
+      const p: Post = { id, author: user?.username ?? 'Anonymous', title: title || 'Untitled', body, photoUrl, createdAt: new Date().toISOString() };
+      await addPost(p);
+      const updated = await getPosts();
+      setPosts(updated);
+      setTitle('');
+      setBody('');
+      setPhotoFile(null);
+      setPhotoError(null);
+      setStatusMsg?.({ id: Date.now(), text: 'Post został opublikowany!', type: 'success' });
+    } catch (err) {
+      setStatusMsg?.({ id: Date.now(), text: 'Nie udało się opublikować posta. Spróbuj ponownie.', type: 'error' });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
     <>
       <section>
-        <h2>Blog & Forum Retro</h2>
+        <h2>Blog i Forum</h2>
         <form onSubmit={submit} style={{ marginBottom: 12, width: '100%' }}>
-          <input placeholder="Tytuł posta" value={title} onChange={(e) => setTitle(e.target.value)} />
-          <textarea placeholder="Podziel się swoją historią" value={body} onChange={(e) => setBody(e.target.value)} style={{ display: 'block', marginTop: 8 }} />
-          <div style={{ marginTop: 8 }}><button type="submit">Opublikuj</button></div>
+          <div className="form-grid">
+            <input placeholder="Tytuł posta" value={title} onChange={(e) => setTitle(e.target.value)} />
+            <textarea placeholder="Podziel się swoją historią" value={body} onChange={(e) => setBody(e.target.value)} style={{ display: 'block' }} />
+            <label>
+              Dodaj zdjęcie (opcjonalnie)
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handlePhotoChange(e.target.files?.[0] ?? null)}
+              />
+            </label>
+            <div className="input-help">Maksymalny rozmiar: 5 MB</div>
+            {photoError && <div className="input-error">{photoError}</div>}
+            {photoPreview && (
+              <div className="media-preview">
+                <img src={photoPreview} alt="Podgląd zdjęcia" />
+                <div className="media-meta">
+                  <div>{photoFile?.name}</div>
+                  <button type="button" onClick={() => handlePhotoChange(null)}>Usuń zdjęcie</button>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="form-actions" style={{ marginTop: 8 }}>
+            <button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Publikowanie...' : 'Opublikuj'}</button>
+            <button type="button" onClick={() => { setTitle(''); setBody(''); setPhotoFile(null); setPhotoError(null); }} disabled={isSubmitting}>Wyczyść</button>
+          </div>
         </form>
 
         <div>
@@ -82,6 +157,11 @@ export default function Blog({ setStatusMsg }: { setStatusMsg?: React.Dispatch<R
               </div>
               <div style={{ fontSize: 12, color: '#ccc' }}>autor: {p.author} • {new Date(p.createdAt).toLocaleString()}</div>
               <p style={{ marginTop: 8 }}>{p.body}</p>
+              {p.photoUrl && (
+                <div className="post-media">
+                  <img src={p.photoUrl} alt={`Zdjęcie do posta ${p.title}`} loading="lazy" />
+                </div>
+              )}
             </article>
           ))}
         </div>
