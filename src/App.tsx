@@ -1,5 +1,6 @@
 
 import './styles/retro-full.css';
+import './styles/admin-editing.css';
 import { useState } from 'react';
 import Home from './components/Home';
 import { Plates } from './components/Plates';
@@ -14,15 +15,19 @@ import { useEffect } from 'react';
 import { getVisitorCount, incrementVisitorCount } from './lib/visitorCount';
 import Blog from './components/Blog';
 import Header from './components/Header';
+import Admin from './components/Admin';
+import AdminContentDashboard from './components/AdminContentDashboard';
 import { getPlates } from './lib/storage';
 import { currentUser } from './lib/auth';
+import { AdminProvider, useAdmin } from './lib/adminContext';
+import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 
-type Route = 'home' | 'plates' | 'forum' | 'register' | 'login' | 'profile' | 'history' | 'rejonizacja';
+type Route = 'home' | 'plates' | 'forum' | 'register' | 'login' | 'profile' | 'history' | 'rejonizacja' | 'admin' | 'admin-content';
 
-function App() {
-
+function AppContent() {
   const [route, setRoute] = useState<Route>('home');
   const user = currentUser();
+  const { isAdmin: _isAdmin } = useAdmin();
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   const [latestPlate, setLatestPlate] = useState<string>('PRW 5737');
   const [statusMsg, setStatusMsg] = useState<ToastMsg | null>(null);
@@ -76,6 +81,16 @@ function App() {
           {route === 'login' && <Login onLoggedIn={() => setRoute('profile')} />}
           {route === 'profile' && <Profile setStatusMsg={setStatusMsg} />}
           {route === 'forum' && <Blog setStatusMsg={setStatusMsg} />}
+          {route === 'admin' && (
+            <ProtectedAdminRoute>
+              <Admin />
+            </ProtectedAdminRoute>
+          )}
+          {route === 'admin-content' && (
+            <ProtectedAdminRoute>
+              <AdminContentDashboard />
+            </ProtectedAdminRoute>
+          )}
         </main>
 
         <footer className="retro-footer">
@@ -88,6 +103,14 @@ function App() {
       </div>
       <Toast statusMsg={statusMsg} setStatusMsg={setStatusMsg} />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <AdminProvider>
+      <AppContent />
+    </AdminProvider>
   );
 }
 

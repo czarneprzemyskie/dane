@@ -4,6 +4,7 @@ import { supabase } from '../lib/db';
 import type { Plate } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
 import type { ToastMsg } from './Toast';
+import EditableContent from './EditableContent';
 
 function makeId() {
   return Math.random().toString(36).slice(2, 9);
@@ -84,7 +85,14 @@ export function Plates({ setStatusMsg }: { setStatusMsg: React.Dispatch<React.Se
   return (
     <>
       <section>
-      <h2>Czarne tablice rejestracyjne — Przemyśl</h2>
+      <EditableContent
+        pageKey="plates"
+        sectionKey="page-title"
+        elementType="h2"
+        defaultContent="Czarne tablice rejestracyjne — Przemyśl"
+      >
+        <h2>Czarne tablice rejestracyjne — Przemyśl</h2>
+      </EditableContent>
       <div className="section-toolbar" style={{ marginBottom: 12 }}>
         <input
           className="grow"
