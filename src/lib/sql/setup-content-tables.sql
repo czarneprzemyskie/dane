@@ -110,37 +110,35 @@ USING (true);
 -- ============================================================================
 
 -- Admins can do everything with content items
+-- Using profiles table is_admin field for proper admin check
 CREATE POLICY "Admins can insert content items"
 ON content_items FOR INSERT
 WITH CHECK (
   EXISTS (
-    SELECT 1 FROM auth.users
+    SELECT 1 FROM profiles
     WHERE id = auth.uid()
-    AND raw_user_meta_data->>'role' = 'admin'
+    AND is_admin = true
   )
-  OR auth.uid() IS NOT NULL  -- Allow all authenticated users for now
 );
 
 CREATE POLICY "Admins can update content items"
 ON content_items FOR UPDATE
 USING (
   EXISTS (
-    SELECT 1 FROM auth.users
+    SELECT 1 FROM profiles
     WHERE id = auth.uid()
-    AND raw_user_meta_data->>'role' = 'admin'
+    AND is_admin = true
   )
-  OR auth.uid() IS NOT NULL  -- Allow all authenticated users for now
 );
 
 CREATE POLICY "Admins can delete content items"
 ON content_items FOR DELETE
 USING (
   EXISTS (
-    SELECT 1 FROM auth.users
+    SELECT 1 FROM profiles
     WHERE id = auth.uid()
-    AND raw_user_meta_data->>'role' = 'admin'
+    AND is_admin = true
   )
-  OR auth.uid() IS NOT NULL  -- Allow all authenticated users for now
 );
 
 -- Admins can do everything with audit log
@@ -148,11 +146,10 @@ CREATE POLICY "Admins can manage audit log"
 ON content_audit_log FOR ALL
 USING (
   EXISTS (
-    SELECT 1 FROM auth.users
+    SELECT 1 FROM profiles
     WHERE id = auth.uid()
-    AND raw_user_meta_data->>'role' = 'admin'
+    AND is_admin = true
   )
-  OR auth.uid() IS NOT NULL  -- Allow all authenticated users for now
 );
 
 -- Admins can do everything with versions
@@ -160,11 +157,10 @@ CREATE POLICY "Admins can manage content versions"
 ON content_versions FOR ALL
 USING (
   EXISTS (
-    SELECT 1 FROM auth.users
+    SELECT 1 FROM profiles
     WHERE id = auth.uid()
-    AND raw_user_meta_data->>'role' = 'admin'
+    AND is_admin = true
   )
-  OR auth.uid() IS NOT NULL  -- Allow all authenticated users for now
 );
 
 -- ============================================================================
@@ -316,6 +312,85 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 --   ('rejonizacja', 'page-title', 'h1', 'Rejonizacja', 'published', true),
 --   ('rejonizacja', 'intro-text', 'p', 'Information about our regional structure', 'published', false)
 -- ON CONFLICT (page_key, section_key) DO NOTHING;
+
+-- ============================================================================
+-- Additional Security: RLS Policies for other tables
+-- ============================================================================
+
+-- Enable RLS on profiles (if not already enabled)
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Public can read profiles (username only)
+CREATE POLICY "Public can read profiles" ON profiles
+FOR SELECT USING (true);
+
+-- Only admins can update profiles
+CREATE POLICY "Admins can update profiles" ON profiles
+FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+);
+
+-- Only admins can insert profiles
+CREATE POLICY "Admins can insert profiles" ON profiles
+FOR INSERT WITH CHECK (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+  OR auth.uid() = id  -- Users can insert their own profile
+);
+
+-- Enable RLS on posts table
+ALTER TABLE posts ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read posts
+CREATE POLICY "Public can read posts" ON posts FOR SELECT USING (true);
+
+-- Only authenticated users can insert posts
+CREATE POLICY "Users can insert posts" ON posts
+FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Only post author or admin can update/delete
+CREATE POLICY "Author or admin can update posts" ON posts
+FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+  OR auth.uid()::text = (SELECT id::text FROM auth.users WHERE id = auth.uid())
+);
+
+CREATE POLICY "Author or admin can delete posts" ON posts
+FOR DELETE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+  OR auth.uid()::text = (SELECT id::text FROM auth.users WHERE id = auth.uid())
+);
+
+-- Enable RLS on plates table
+ALTER TABLE plates ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read plates
+CREATE POLICY "Public can read plates" ON plates FOR SELECT USING (true);
+
+-- Only authenticated users can insert plates
+CREATE POLICY "Users can insert plates" ON plates
+FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Only plate owner or admin can update/delete
+CREATE POLICY "Owner or admin can update plates" ON plates
+FOR UPDATE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+  OR owner IN (SELECT username FROM profiles WHERE id = auth.uid())
+);
+
+CREATE POLICY "Owner or admin can delete plates" ON plates
+FOR DELETE USING (
+  EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND is_admin = true)
+  OR owner IN (SELECT username FROM profiles WHERE id = auth.uid())
+);
+
+-- Enable RLS on visitor_count table
+ALTER TABLE visitor_count ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can read visitor count
+CREATE POLICY "Public can read visitor_count" ON visitor_count FOR SELECT USING (true);
+
+-- Only service role can update visitor count (via RPC function)
+-- The increment_visitor_count RPC function handles this securely
 
 -- ============================================================================
 -- End of Schema Setup

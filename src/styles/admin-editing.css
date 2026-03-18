@@ -28,6 +28,7 @@
 .editable-content-wrapper .editable-content-inner {
   position: relative;
   transition: var(--edit-transition);
+  cursor: pointer;
 }
 
 /* Hover state for admin */
@@ -197,6 +198,7 @@
 .content-wrapper-content {
   position: relative;
   transition: var(--edit-transition);
+  cursor: pointer;
 }
 
 .content-wrapper:hover .content-wrapper-content {
@@ -348,7 +350,7 @@
 }
 
 .editable-text-content {
-  cursor: default;
+  cursor: pointer;
   transition: var(--edit-transition);
 }
 

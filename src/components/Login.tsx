@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { login } from '../lib/auth.ts';
 
-export default function Login({ onLoggedIn }: { onLoggedIn?: () => void }) {
+export default function Login({ onLoggedIn, refreshUser }: { onLoggedIn?: () => void, refreshUser?: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
@@ -11,7 +11,8 @@ export default function Login({ onLoggedIn }: { onLoggedIn?: () => void }) {
     const res = await login(email, password);
     if (!res.ok) setMsg(res.error || 'Error');
     else {
-      setMsg('Logged in');
+      setMsg('Zalogowano');
+      if (refreshUser) refreshUser();
       if (onLoggedIn) onLoggedIn();
     }
   };

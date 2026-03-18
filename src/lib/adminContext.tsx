@@ -13,7 +13,6 @@ interface AdminContextType {
   isAdmin: boolean;
   isLoading: boolean;
   checkAdminStatus: () => Promise<void>;
-  refreshAdminStatus: () => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -42,6 +41,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       if (error) {
         console.error('Error fetching admin profile:', error);
         setAdminUser(null);
+        setIsLoading(false);
         return;
       }
 
@@ -62,11 +62,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const refreshAdminStatus = useCallback(async () => {
-    setIsLoading(true);
-    await checkAdminStatus();
-  }, [checkAdminStatus]);
-
   useEffect(() => {
     checkAdminStatus();
   }, [checkAdminStatus]);
@@ -78,7 +73,6 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         isAdmin: adminUser?.isAdmin ?? false,
         isLoading,
         checkAdminStatus,
-        refreshAdminStatus,
       }}
     >
       {children}

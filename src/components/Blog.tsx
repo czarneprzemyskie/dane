@@ -4,6 +4,7 @@ import { addPost, getPosts, removePost, uploadImage } from '../lib/storage.ts';
 import { supabase } from '../lib/db';
 import type { Post } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
+import { X } from 'lucide-react';
 
 function makeId() { return Math.random().toString(36).slice(2,9); }
 
@@ -16,6 +17,7 @@ export default function Blog({ setStatusMsg }: { setStatusMsg?: React.Dispatch<R
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -159,13 +161,28 @@ export default function Blog({ setStatusMsg }: { setStatusMsg?: React.Dispatch<R
               <p style={{ marginTop: 8 }}>{p.body}</p>
               {p.photoUrl && (
                 <div className="post-media">
-                  <img src={p.photoUrl} alt={`Zdjęcie do posta ${p.title}`} loading="lazy" />
+                  <img 
+                    src={p.photoUrl} 
+                    alt={`Zdjęcie do posta ${p.title}`} 
+                    loading="lazy" 
+                    onClick={() => setLightboxImage(p.photoUrl!)}
+                  />
                 </div>
               )}
             </article>
           ))}
         </div>
       </section>
+
+      {/* Lightbox Popup */}
+      {lightboxImage && (
+        <div className="lightbox-overlay" onClick={() => setLightboxImage(null)}>
+          <button className="lightbox-close" onClick={() => setLightboxImage(null)}>
+            <X size={32} />
+          </button>
+          <img src={lightboxImage} alt="Powiększone zdjęcie" onClick={(e) => e.stopPropagation()} />
+        </div>
+      )}
     </>
   );
 }

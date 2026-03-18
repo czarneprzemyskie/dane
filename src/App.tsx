@@ -26,11 +26,15 @@ type Route = 'home' | 'plates' | 'forum' | 'register' | 'login' | 'profile' | 'h
 
 function AppContent() {
   const [route, setRoute] = useState<Route>('home');
+  const [userKey, setUserKey] = useState(0);
   const user = currentUser();
   const { isAdmin: _isAdmin } = useAdmin();
   const [visitorCount, setVisitorCount] = useState<number | null>(null);
   const [latestPlate, setLatestPlate] = useState<string>('PRW 5737');
   const [statusMsg, setStatusMsg] = useState<ToastMsg | null>(null);
+
+  // Force re-render when user changes (login/logout)
+  const refreshUser = () => setUserKey(k => k + 1);
 
   useEffect(() => {
     // Increment visitor count on mount
@@ -59,7 +63,7 @@ function AppContent() {
   return (
     <div className="retro-bg">
       <div className="container">
-        <Header onNavigate={(r: string) => setRoute(r as Route)} latestPlate={latestPlate} />
+        <Header key={userKey} onNavigate={(r: string) => setRoute(r as Route)} latestPlate={latestPlate} refreshUser={refreshUser} />
         <nav className="retro-nav">
           <button className="nav-link" onClick={() => setRoute('plates')}>Baza tablic</button>
           <button className="nav-link" onClick={() => setRoute('forum')}>Forum</button>
@@ -78,7 +82,7 @@ function AppContent() {
           {route === 'history' && <History />}
           {route === 'rejonizacja' && <Rejonizacja />}
           {route === 'register' && <Register onRegistered={() => setRoute('login')} />}
-          {route === 'login' && <Login onLoggedIn={() => setRoute('profile')} />}
+          {route === 'login' && <Login onLoggedIn={() => setRoute('profile')} refreshUser={refreshUser} />}
           {route === 'profile' && <Profile setStatusMsg={setStatusMsg} />}
           {route === 'forum' && <Blog setStatusMsg={setStatusMsg} />}
           {route === 'admin' && (

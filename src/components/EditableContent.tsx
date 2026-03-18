@@ -18,6 +18,7 @@ export interface EditableContentProps {
   defaultContent: string;
   className?: string;
   children?: React.ReactNode;
+  editable?: boolean; // If true (default), admin can edit this content
 }
 
 // Status badge colors
@@ -42,9 +43,12 @@ export const EditableContent: React.FC<EditableContentProps> = ({
   elementType,
   defaultContent,
   className = '',
-  children
+  children,
+  editable = true
 }) => {
   const { isAdmin, adminUser, isLoading: adminLoading } = useAdmin();
+  // If editable prop is explicitly true, allow editing
+  const isEditable = editable === true;
   const [content, setContent] = useState<ContentItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -198,14 +202,23 @@ export const EditableContent: React.FC<EditableContentProps> = ({
     }
   };
 
-  // Don't show any indicators for non-admin users
-  if (!isAdmin || adminLoading) {
+  // Don't show any indicators for non-admin users or non-editable content
+  if (!isAdmin || adminLoading || !isEditable) {
     if (children) {
       return <>{children}</>;
     }
     return (
       <>
         {renderElement(displayContent)}
+      </>
+    );
+  }
+
+  // Don't show edit indicators if not editable
+  if (!isEditable && isAdmin && !adminLoading) {
+    return (
+      <>
+        {children ? children : renderElement(displayContent)}
       </>
     );
   }

@@ -4,7 +4,7 @@ import { supabase } from '../lib/db';
 import type { Plate } from '../lib/storage.ts';
 import { currentUser } from '../lib/auth.ts';
 import type { ToastMsg } from './Toast';
-import EditableContent from './EditableContent';
+import { X } from 'lucide-react';
 
 function makeId() {
   return Math.random().toString(36).slice(2, 9);
@@ -18,6 +18,7 @@ export function Plates({ setStatusMsg }: { setStatusMsg: React.Dispatch<React.Se
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUsername, setCurrentUsername] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -85,14 +86,7 @@ export function Plates({ setStatusMsg }: { setStatusMsg: React.Dispatch<React.Se
   return (
     <>
       <section>
-      <EditableContent
-        pageKey="plates"
-        sectionKey="page-title"
-        elementType="h2"
-        defaultContent="Czarne tablice rejestracyjne — Przemyśl"
-      >
-        <h2>Czarne tablice rejestracyjne — Przemyśl</h2>
-      </EditableContent>
+      <h2>Czarne tablice rejestracyjne — Przemyśl</h2>
       <div className="section-toolbar" style={{ marginBottom: 12 }}>
         <input
           className="grow"
@@ -150,13 +144,28 @@ export function Plates({ setStatusMsg }: { setStatusMsg: React.Dispatch<React.Se
             {p.notes && <div style={{ marginTop: 6 }}>{p.notes}</div>}
             {p.photoUrl && (
               <div className="plate-media">
-                <img src={p.photoUrl} alt={`Zdjęcie tablicy ${p.registration}`} loading="lazy" />
+                <img 
+                  src={p.photoUrl} 
+                  alt={`Zdjęcie tablicy ${p.registration}`} 
+                  loading="lazy" 
+                  onClick={() => setLightboxImage(p.photoUrl!)}
+                />
               </div>
             )}
           </div>
         ))}
       </div>
     </section>
+
+    {/* Lightbox Popup */}
+    {lightboxImage && (
+      <div className="lightbox-overlay" onClick={() => setLightboxImage(null)}>
+        <button className="lightbox-close" onClick={() => setLightboxImage(null)}>
+          <X size={32} />
+        </button>
+        <img src={lightboxImage} alt="Powiększone zdjęcie" onClick={(e) => e.stopPropagation()} />
+      </div>
+    )}
     </>
   );
 }
